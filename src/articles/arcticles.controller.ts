@@ -43,7 +43,23 @@ export class ArcticlesController {
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Patch()
-  async updateArticle(@User() user: AuthenticatedUser, @Body() updateArticleDto: UpdateArticleDto) {
+  async updateArticle(
+    @User() user: AuthenticatedUser,
+    @Body() updateArticleDto: UpdateArticleDto,
+  ) {
     return await this.articlesService.updateArticle(user.id, updateArticleDto);
+  }
+
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteArticle(
+    @User() user: AuthenticatedUser,
+    @Body('articleId') articleId: string,
+  ) {
+    return await this.articlesService.deleteArticle(
+      user.id,
+      parseInt(articleId),
+    );
   }
 }

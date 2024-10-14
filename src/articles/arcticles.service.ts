@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ArticleEntity } from './article.entity';
@@ -29,8 +34,28 @@ export class ArticlesService {
   }
 
   async updateArticle(userId: number, updateArticleDto: UpdateArticleDto) {
-    // Check if the article exists
-    const article = await this.articlesRepository.findOneBy({ id: updateArticleDto.id });
+    const article = await this.validateArticle(userId, updateArticleDto.id);
+
+    return await this.articlesRepository.save({
+      ...article,
+      description: updateArticleDto.newDescription,
+    });
+  }
+
+  async deleteArticle(userId: number, articleId: number) {
+    await this.validateArticle(userId, articleId);
+    await this.articlesRepository.delete(articleId);
+  }
+
+  // Make sure article exists and belongs to user making the request
+  private async validateArticle(
+    userId: number,
+    articleId: number,
+  ): Promise<ArticleEntity> {
+    const article = await this.articlesRepository.findOneBy({
+      id: articleId,
+    });
+
     if (!article) {
       throw new NotFoundException('Article does not exist.');
     }
@@ -40,9 +65,6 @@ export class ArticlesService {
       throw new UnauthorizedException('Article belongs to a different user.');
     }
 
-    return await this.articlesRepository.save({
-      ...article,
-      description: updateArticleDto.newDescription
-    });
+    return article;
   }
 }
