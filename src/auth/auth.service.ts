@@ -53,7 +53,7 @@ export class AuthService {
       username: signInUserDto.username,
       sub: signInUserDto.id,
     };
-    console.log(payload);
+
     return {
       access_token: this.jwtService.sign(payload),
     };
