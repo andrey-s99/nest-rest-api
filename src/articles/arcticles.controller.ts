@@ -17,15 +17,17 @@ import { User } from 'src/decorators/user.decorator';
 import { AuthenticatedUser } from 'src/auth/interfaces/authenticated-user.interface';
 import { CreateArticleDto } from './dtos/create-article.dto';
 import { UpdateArticleDto } from './dtos/update-article.dto';
+import { GetArticlesDto } from './dtos/get-articles.dto';
 
 @Controller('api/articles')
 export class ArcticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @HttpCode(200)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
-  async getArticles(@Query() params: any) {
-    return await this.articlesService.getArticles();
+  async getArticles(@Query() query: GetArticlesDto) {
+    return await this.articlesService.getArticles(query);
   }
 
   @HttpCode(201)

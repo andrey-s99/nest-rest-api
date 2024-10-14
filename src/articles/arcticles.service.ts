@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dtos/create-article.dto';
 import { UpdateArticleDto } from './dtos/update-article.dto';
+import { GetArticlesDto } from './dtos/get-articles.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -17,8 +18,45 @@ export class ArticlesService {
     private readonly articlesRepository: Repository<ArticleEntity>,
   ) {}
 
-  async getArticles() {
-    return await this.articlesRepository.find();
+  async getArticles(query: GetArticlesDto) {
+    const { author, startDate, endDate, page, limit } = query;
+
+    const qb = this.articlesRepository
+      .createQueryBuilder('article')
+      .leftJoin('article.author', 'users'); // Join with users table
+
+    if (author) {
+      qb.andWhere('users.username = :author', { author });
+    }
+
+    if (startDate) {
+      qb.andWhere('article.publishDate >= :startDate', { startDate });
+    }
+
+    if (endDate) {
+      qb.andWhere('article.publishDate <= :endDate', { endDate });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [articles, total] = await qb
+      .select([
+        'article.id',
+        'article.name',
+        'article.description',
+        'article.publishDate',
+        'users.username',
+      ])
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: articles,
+      count: total,
+      page,
+      limit,
+    };
   }
 
   async createArticle(userId: number, createArticleDto: CreateArticleDto) {

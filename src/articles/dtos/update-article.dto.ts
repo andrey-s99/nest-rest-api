@@ -1,10 +1,10 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateArticleDto {
   @Transform(({ value }) => parseInt(value))
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   id: number;
 
   @IsNotEmpty()
