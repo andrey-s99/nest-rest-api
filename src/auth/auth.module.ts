@@ -11,14 +11,11 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: "1",
-      signOptions: { expiresIn: '120s'}
-    })
+      secret: '1',
+      signOptions: { expiresIn: '120s' },
+    }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    LocalStrategy
-  ],
+  providers: [AuthService, LocalStrategy],
 })
 export class AuthModule {}

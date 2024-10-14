@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '../users/user.entity';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
+import { ArcticleEntity } from '../articles/article.entity';
 
 config();
 
@@ -14,6 +15,6 @@ export default new DataSource({
   username: configService.get<string>('POSTGRES_USER'),
   password: configService.get<string>('POSTGRES_PASSWORD'),
   database: configService.get<string>('POSTGRES_DB'),
-  entities: [UserEntity],
+  entities: [UserEntity, ArcticleEntity],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
 });

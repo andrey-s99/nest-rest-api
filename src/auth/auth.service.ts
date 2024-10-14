@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { SignInUserDto } from 'src/users/dtos/sign-in-user.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -9,15 +9,20 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
   ) {}
 
-  async signUp(createUserDto: CreateUserDto): Promise<{ access_token: string }> {
+  async signUp(
+    createUserDto: CreateUserDto,
+  ): Promise<{ access_token: string }> {
     // Check if the user exists
     const user = await this.usersService.getUser(createUserDto.username);
     // Compare passwords
     if (user) {
-      const isPasswordMatch = await bcrypt.compare(createUserDto.password, user.password);
+      const isPasswordMatch = await bcrypt.compare(
+        createUserDto.password,
+        user.password,
+      );
       if (!isPasswordMatch) {
         throw new ConflictException('Username is taken.');
       } else {
@@ -41,14 +46,16 @@ export class AuthService {
     return await this.signIn(signInUserDto);
   }
 
-  async signIn(signInUserDto: SignInUserDto): Promise<{ access_token: string }>  {
+  async signIn(
+    signInUserDto: SignInUserDto,
+  ): Promise<{ access_token: string }> {
     const payload = {
       username: signInUserDto.username,
-      id: signInUserDto.id
+      id: signInUserDto.id,
     };
 
     return {
-      access_token: this.jwtService.sign(payload)
+      access_token: this.jwtService.sign(payload),
     };
   }
 }
