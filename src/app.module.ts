@@ -6,10 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }), // Load env variables
     DatabaseModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [],
   providers: [],
