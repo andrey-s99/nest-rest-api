@@ -7,7 +7,7 @@ export class AddUserArticleRelations1728902247124
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "articles" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "description" text NOT NULL, "publishDate" date NOT NULL, "authorId" integer, CONSTRAINT "PK_0a6e2c450d83e0b6052c2793334" PRIMARY KEY ("id"))`,
+      `ALTER TABLE "articles" ADD "authorId" integer`,
     );
     await queryRunner.query(
       `ALTER TABLE "articles" ADD CONSTRAINT "FK_65d9ccc1b02f4d904e90bd76a34" FOREIGN KEY ("authorId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,

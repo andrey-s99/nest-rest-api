@@ -10,7 +10,6 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { Request } from 'express';
 import { SignInUserDto } from 'src/users/dtos/sign-in-user.dto';
 import { User } from 'src/decorators/user.decorator';
 import { AuthenticatedUser } from './interfaces/authenticated-user.interface';

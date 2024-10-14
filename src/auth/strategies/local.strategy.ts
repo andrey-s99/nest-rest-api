@@ -20,6 +20,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Incorrect password.');
     }
 
+    console.log({
+      username,
+      id: user.id,
+    });
     return {
       username,
       id: user.id,

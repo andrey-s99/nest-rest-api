@@ -22,7 +22,8 @@
     "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./src/database/data-source.config.ts",
     "typeorm:generate-migration": "npm run typeorm -- -d ./src/database/data-source.config.ts migration:generate ./src/database/migrations/$npm_config_name",
     "typeorm:create-migration": "npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
-    "typeorm:revert-migration": "npm run typeorm -- -d ./src/database/data-source.config.ts migration:revert"
+    "typeorm:revert-migration": "npm run typeorm -- -d ./src/database/data-source.config.ts migration:revert",
+    "drop": "npm run typeorm -- -d ./src/database/data-source.config.ts schema:drop"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

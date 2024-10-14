@@ -1,8 +1,8 @@
 import { UserEntity } from '../users/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('articles')
-export class ArcticleEntity {
+export class ArticleEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,5 +17,9 @@ export class ArcticleEntity {
 
   // Many articles are authored by one user
   @ManyToOne(() => UserEntity, (user) => user.articles)
+  @JoinColumn({ name: 'authorId' })
   author: UserEntity;
+
+  @Column()
+  authorId: number;
 }

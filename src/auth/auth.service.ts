@@ -51,9 +51,9 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const payload = {
       username: signInUserDto.username,
-      id: signInUserDto.id,
+      sub: signInUserDto.id,
     };
-
+    console.log(payload);
     return {
       access_token: this.jwtService.sign(payload),
     };
