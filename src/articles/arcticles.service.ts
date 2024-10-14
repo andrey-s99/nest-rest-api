@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -10,15 +11,19 @@ import { ArticleEntity } from './article.entity';
 import { CreateArticleDto } from './dtos/create-article.dto';
 import { UpdateArticleDto } from './dtos/update-article.dto';
 import { GetArticlesDto } from './dtos/get-articles.dto';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ReturnArticlesDto } from './dtos/return-articles.dto';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(ArticleEntity)
     private readonly articlesRepository: Repository<ArticleEntity>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
-  async getArticles(query: GetArticlesDto) {
+  async getArticles(query: GetArticlesDto): Promise<ReturnArticlesDto> {
     const { author, startDate, endDate, page, limit } = query;
 
     const qb = this.articlesRepository
@@ -51,12 +56,17 @@ export class ArticlesService {
       .take(limit)
       .getManyAndCount();
 
-    return {
-      data: articles,
-      count: total,
+    const returnArticlesDto = new ReturnArticlesDto(
+      articles,
+      total,
       page,
       limit,
-    };
+    );
+
+    // Cache the response
+    await this.cacheManager.set('cached-response', returnArticlesDto);
+
+    return returnArticlesDto;
   }
 
   async createArticle(userId: number, createArticleDto: CreateArticleDto) {
@@ -74,6 +84,9 @@ export class ArticlesService {
   async updateArticle(userId: number, updateArticleDto: UpdateArticleDto) {
     const article = await this.validateArticle(userId, updateArticleDto.id);
 
+    // Invalidate cache
+    await this.cacheManager.reset();
+
     return await this.articlesRepository.save({
       ...article,
       description: updateArticleDto.newDescription,
@@ -83,6 +96,8 @@ export class ArticlesService {
   async deleteArticle(userId: number, articleId: number) {
     await this.validateArticle(userId, articleId);
     await this.articlesRepository.delete(articleId);
+    // Invalidate cache
+    await this.cacheManager.reset();
   }
 
   // Make sure article exists and belongs to user making the request

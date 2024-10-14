@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -18,12 +19,14 @@ import { AuthenticatedUser } from 'src/auth/interfaces/authenticated-user.interf
 import { CreateArticleDto } from './dtos/create-article.dto';
 import { UpdateArticleDto } from './dtos/update-article.dto';
 import { GetArticlesDto } from './dtos/get-articles.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('api/articles')
 export class ArcticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @HttpCode(200)
+  @UseInterceptors(CacheInterceptor)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async getArticles(@Query() query: GetArticlesDto) {
