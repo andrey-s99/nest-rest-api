@@ -132,4 +132,39 @@ describe('ArticlesService', () => {
       expect(result.description).toEqual(testUpdateArticleDto.newDescription);
     });
   });
+
+  describe('deleteArticle', () => {
+    it('Should delete article from db', async () => {
+      // Insert mock user
+      const testUser = usersRepository.create({
+        username: 'testuser',
+        password: 'password',
+      });
+      await usersRepository.save(testUser);
+
+      // Insert article associated with the user
+      const testArticle = articlesRepository.create({
+        name: 'Test Article',
+        description: 'Test Description',
+        publishDate: new Date(),
+        authorId: testUser.id,
+      });
+      await articlesRepository.save(testArticle);
+
+      // Test if the article was saved
+      const isArticleSaved = await articlesRepository.findOneBy({
+        id: testArticle.id,
+      });
+      expect(isArticleSaved).toBeInstanceOf(ArticleEntity);
+
+      await articleService.deleteArticle(testUser.id, testArticle.id);
+
+      const isArticeDeleted = await articlesRepository.findOneBy({
+        id: testArticle.id,
+      });
+
+      // Test if the article was deleted
+      expect(isArticeDeleted).toEqual(null);
+    });
+  });
 });
