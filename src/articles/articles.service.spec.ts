@@ -7,6 +7,7 @@ import { UserEntity } from '../users/user.entity';
 import { GetArticlesDto } from './dtos/get-articles.dto';
 import { ReturnArticlesDto } from './dtos/return-articles.dto';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CreateArticleDto } from './dtos/create-article.dto';
 
 describe('ArticlesService', () => {
   let articleService: ArticlesService;
@@ -40,7 +41,7 @@ describe('ArticlesService', () => {
   });
 
   describe('getArticles', () => {
-    it('Should return articles with the correct author and cache the results', async () => {
+    it('Should return articles with the correct author', async () => {
       // Insert mock user
       const testUser = usersRepository.create({
         username: 'testuser',
@@ -70,6 +71,32 @@ describe('ArticlesService', () => {
       expect(result.count).toEqual(1);
       expect(result.data[0].name).toEqual(testArticle.name);
       expect(result.data[0].author.username).toEqual(testUser.username);
+    });
+  });
+
+  describe('createArticle', () => {
+    it('Should create a new article and return it', async () => {
+      // Create test article DTO
+      const testArticle: CreateArticleDto = new CreateArticleDto();
+      testArticle.name = 'Test Article';
+      testArticle.description = 'Test Description';
+
+      // Create test user as article author
+      const testUser = usersRepository.create({
+        username: 'testuser',
+        password: 'password',
+      });
+      await usersRepository.save(testUser);
+
+      const result = await articleService.createArticle(
+        testUser.id,
+        testArticle,
+      );
+
+      expect(result).toBeInstanceOf(ArticleEntity);
+      expect(result.name).toEqual(testArticle.name);
+      expect(result.description).toEqual(testArticle.description);
+      expect(result.authorId).toEqual(testUser.id);
     });
   });
 });
