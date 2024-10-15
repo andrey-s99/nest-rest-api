@@ -29,6 +29,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('sign-in')
   async signIn(@User() user: AuthenticatedUser) {
+    // Construct singInDto from @User decorator
     const signInUserDto = new SignInUserDto();
     signInUserDto.username = user.username;
     signInUserDto.id = user.id;

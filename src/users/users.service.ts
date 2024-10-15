@@ -27,7 +27,7 @@ export class UsersService {
     });
 
     // Add new user entity to the db
-    // insert method is used for effeciency and simplicity
+    // insert method is used for effeciency
     await this.usersRepository.insert(userEntity);
 
     return userEntity;

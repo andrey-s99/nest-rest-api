@@ -8,6 +8,7 @@ config();
 
 const configService = new ConfigService();
 
+// DataSource config to run migrations
 export default new DataSource({
   type: `postgres`,
   host: 'localhost',

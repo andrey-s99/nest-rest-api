@@ -35,7 +35,7 @@ export class AuthService {
       }
     }
 
-    // Create a new user
+    // Create new user
     const newUser = await this.usersService.createUser(createUserDto);
 
     // Sign in new user
@@ -49,11 +49,13 @@ export class AuthService {
   async signIn(
     signInUserDto: SignInUserDto,
   ): Promise<{ access_token: string }> {
+    // Set username and user id to payload
     const payload = {
       username: signInUserDto.username,
       sub: signInUserDto.id,
     };
 
+    // Return JWT token
     return {
       access_token: this.jwtService.sign(payload),
     };

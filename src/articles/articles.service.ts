@@ -24,12 +24,15 @@ export class ArticlesService {
   ) {}
 
   async getArticles(query: GetArticlesDto): Promise<ReturnArticlesDto> {
+    // Destructure optional filters
     const { author, startDate, endDate, page, limit } = query;
 
+    // Create query builder
     const qb = this.articlesRepository
       .createQueryBuilder('article')
       .leftJoin('article.author', 'users'); // Join with users table
 
+    // Apply filters if exist
     if (author) {
       qb.andWhere('users.username = :author', { author });
     }
@@ -44,6 +47,7 @@ export class ArticlesService {
 
     const skip = (page - 1) * limit;
 
+    // Fetch data from bd
     const [articles, total] = await qb
       .select([
         'article.id',
@@ -70,14 +74,18 @@ export class ArticlesService {
   }
 
   async createArticle(userId: number, createArticleDto: CreateArticleDto) {
+    // Create new article entity
     const newArticle = new ArticleEntity();
     newArticle.name = createArticleDto.name;
     newArticle.description = createArticleDto.description;
     newArticle.publishDate = new Date();
 
+    // Assign user making a request as author
     newArticle.authorId = userId;
 
+    // Insert article to db
     await this.articlesRepository.insert(newArticle);
+
     return newArticle;
   }
 
@@ -87,6 +95,7 @@ export class ArticlesService {
     // Invalidate cache
     await this.cacheManager.reset();
 
+    // Update description
     return await this.articlesRepository.save({
       ...article,
       description: updateArticleDto.newDescription,
@@ -95,12 +104,14 @@ export class ArticlesService {
 
   async deleteArticle(userId: number, articleId: number) {
     await this.validateArticle(userId, articleId);
+
+    // Delete article from db
     await this.articlesRepository.delete(articleId);
     // Invalidate cache
     await this.cacheManager.reset();
   }
 
-  // Make sure article exists and belongs to user making the request
+  // Validate article existence and user ownership
   private async validateArticle(
     userId: number,
     articleId: number,
