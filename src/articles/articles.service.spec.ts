@@ -8,6 +8,7 @@ import { GetArticlesDto } from './dtos/get-articles.dto';
 import { ReturnArticlesDto } from './dtos/return-articles.dto';
 import { CacheModule } from '@nestjs/cache-manager';
 import { CreateArticleDto } from './dtos/create-article.dto';
+import { UpdateArticleDto } from './dtos/update-article.dto';
 
 describe('ArticlesService', () => {
   let articleService: ArticlesService;
@@ -97,6 +98,38 @@ describe('ArticlesService', () => {
       expect(result.name).toEqual(testArticle.name);
       expect(result.description).toEqual(testArticle.description);
       expect(result.authorId).toEqual(testUser.id);
+    });
+  });
+
+  describe('updateArticle', () => {
+    it('Should update article description and return it', async () => {
+      // Insert mock user
+      const testUser = usersRepository.create({
+        username: 'testuser',
+        password: 'password',
+      });
+      await usersRepository.save(testUser);
+
+      // Insert article associated with the user
+      const testArticle = articlesRepository.create({
+        name: 'Test Article',
+        description: 'Test Description',
+        publishDate: new Date(),
+        authorId: testUser.id,
+      });
+      await articlesRepository.save(testArticle);
+
+      const testUpdateArticleDto: UpdateArticleDto = new UpdateArticleDto();
+      testUpdateArticleDto.id = testArticle.id;
+      testUpdateArticleDto.newDescription = 'Updated Description';
+
+      const result = await articleService.updateArticle(
+        testUser.id,
+        testUpdateArticleDto,
+      );
+
+      expect(result.name).toEqual(testArticle.name);
+      expect(result.description).toEqual(testUpdateArticleDto.newDescription);
     });
   });
 });
