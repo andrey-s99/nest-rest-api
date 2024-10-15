@@ -12,7 +12,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ArticlesService } from './arcticles.service';
+import { ArticlesService } from './articles.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { AuthenticatedUser } from 'src/auth/interfaces/authenticated-user.interface';
@@ -22,7 +22,7 @@ import { GetArticlesDto } from './dtos/get-articles.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('api/articles')
-export class ArcticlesController {
+export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @HttpCode(200)
