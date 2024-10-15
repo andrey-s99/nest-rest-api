@@ -50,6 +50,7 @@ REST API includes:
    POSTGRES_PORT=5433 # Port 5433 is mapped to port 5432 in Docker
    JWT_KEY=your_jwt_secret
    REDIS_USER=your_redis_user
+   REDIS_PORT=6380 # Port 6380 is mapped to port 6379 in Docker
    ```
    Replace the placeholder values with your actual configurations.
    
