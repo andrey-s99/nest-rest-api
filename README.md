@@ -17,6 +17,12 @@ REST API includes:
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 
 ## How to run
+### Prerequisites
+- [Docker](https://www.docker.com/get-started) installed on your machine
+- [Docker Compose](https://docs.docker.com/compose/install/) installed (usually included with Docker Desktop)
+- [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed (for development purposes)
+
+### Instruction
 1. **Clone the Repository**
 
    Open your terminal and clone the repository:
