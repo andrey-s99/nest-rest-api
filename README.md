@@ -6,7 +6,7 @@ REST API includes:
 - Database handling with PostgreSQL and TypeORM
 - CRUD operations
 - Response data caching with REDIS
-- Containerized with docker db and cache images
+- Containerized with Docker DB and CACHE images
 
 ## Technhologies used
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
